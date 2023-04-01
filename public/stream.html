@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="socket.io/socket.io.js"></script>
+    <title>Stream</title>
+</head>
+<body>
+    <video id="video" width="640" height="480" autoplay></video>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <button onclick="capture()">Capture</button>
+    <p id='printresult'></p>
+    <script>
+        const socket = io.connect();
+
+        var video = document.getElementById('video');
+
+        navigator.mediaDevices.getUserMedia({ video: {facingMode: 'environment' }}).then(function(stream) {
+            video.srcObject = stream
+            video.play();
+        });
+
+
+        setInterval(function(){
+            capture()
+        }, 2000);
+        
+        function capture(){
+            var canvas = document.getElementById('canvas');     
+            var video = document.getElementById('video');
+            
+            canvas.width = 640;
+            canvas.height = 480;
+            canvas.getContext('2d').drawImage(video, 0, 0,  640,  480);  
+            
+            const imageEncoded = canvas.toDataURL().slice(22);
+            socket.emit('image-encoded', imageEncoded)
+            
+        }
+
+    </script>
+</body>
+</html>
