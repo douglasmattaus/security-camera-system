@@ -36,9 +36,13 @@
             canvas.getContext('2d').drawImage(video, 0, 0,  640,  480);  
             
             const imageEncoded = canvas.toDataURL().slice(22);
-            socket.emit('image-encoded', imageEncoded)
-            
+            socket.emit('image-encoded', imageEncoded)   
         }
+
+        socket.on('recording', (audioUrl)=>{
+            const audio = new Audio(audioUrl);
+            audio.play()
+        })
 
     </script>
 </body>
